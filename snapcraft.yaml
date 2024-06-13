@@ -1,18 +1,17 @@
-name: yourapp
+name: app
 base: core22
-adopt-info: metapart
-version: '1.0.0'
-summary: This is your summary # 79 char long summary
+version: '2.0.4'
+summary: Your summary # 79 char long summary
 description: |
-  This is your description
+  Your Description
 
 grade: stable
 confinement: strict
 
 apps:
-  rosary:
-    command: bin/rosary
-    desktop: usr/share/applications/rosary.desktop
+  app:
+    command: bin/app
+    desktop: usr/share/applications/app.desktop
 
 package-repositories:
   - type: apt
@@ -49,10 +48,9 @@ parts:
       craftctl default
       rustup default nightly
       npm install
-      npm run tauri icon Bible3.png
       npm run tauri build -- --bundles deb
       dpkg -x src-tauri/target/release/bundle/deb/*.deb here
-      sed -i -e "s|Icon=yourapp|Icon=/usr/share/icons/hicolor/32x32/apps/yourapp.png|g" here/usr/share/applications/yourapp.desktop
+      sed -i -e "s|Icon=app|Icon=/usr/share/icons/hicolor/32x32/apps/app.png|g" here/usr/share/applications/app.desktop
       cp -r here/* .
     organize:
-      usr/bin/rosary: bin/rosary
+      usr/bin/app: bin/app
