@@ -1,0 +1,58 @@
+name: yourapp
+base: core22
+adopt-info: metapart
+version: '1.0.0'
+summary: This is your summary # 79 char long summary
+description: |
+  This is your description
+
+grade: stable
+confinement: strict
+
+apps:
+  rosary:
+    command: bin/rosary
+    desktop: usr/share/applications/rosary.desktop
+
+package-repositories:
+  - type: apt
+    components: [main]
+    suites: [noble]
+    key-id: 78E1918602959B9C59103100F1831DDAFC42E99D
+    url: http://ppa.launchpad.net/snappy-dev/snapcraft-daily/ubuntu
+
+parts:
+  prep:
+    plugin: dump
+    build-snaps:
+      - node/20/stable
+      - rustup/latest/stable
+    build-packages:
+      - libwebkit2gtk-4.1-dev
+      - build-essential 
+      - curl 
+      - wget 
+      - file 
+      - libxdo-dev 
+      - libssl-dev 
+      - libayatana-appindicator3-dev 
+      - librsvg2-dev
+      - dpkg
+    stage-packages:
+      - libwebkit2gtk-4.1-0
+      - libglu1-mesa
+      - libsoup-3.0-0
+      - freeglut3
+    source: .
+    override-pull: |
+      set -eu
+      craftctl default
+      rustup default nightly
+      npm install
+      npm run tauri icon Bible3.png
+      npm run tauri build -- --bundles deb
+      dpkg -x src-tauri/target/release/bundle/deb/*.deb here
+      sed -i -e "s|Icon=yourapp|Icon=/usr/share/icons/hicolor/32x32/apps/yourapp.png|g" here/usr/share/applications/yourapp.desktop
+      cp -r here/* .
+    organize:
+      usr/bin/rosary: bin/rosary
